@@ -54,9 +54,10 @@ public class GUI {
 
                     // for now, just using our simple translator, but
                     // we'll need to use the real JSON version later.
-                    Translator translator = new CanadaTranslator();
+                    Translator translator = new JSONTranslator();
 
-                    String result = translator.translate(country, language);
+                    String result = translator.translate(countryCodeConverter.fromCountry(country).toLowerCase(),
+                            languageCodeConverter.fromLanguage(language).toLowerCase());
                     if (result == null) {
                         result = "no translation found!";
                     }
