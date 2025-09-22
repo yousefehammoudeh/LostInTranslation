@@ -16,6 +16,8 @@ public class CountryCodeConverter {
 
     private Map<String, String> countryCodeToCountry = new HashMap<>();
     private Map<String, String> countryToCountryCode = new HashMap<>();
+    private Map<String, String> alpha2ToAlpha3 = new HashMap<>();
+    private Map<String, String> alpha3ToAlpha2 = new HashMap<>();
 
     /**
      * Default constructor that loads the country codes from "country-codes.txt"
@@ -43,6 +45,8 @@ public class CountryCodeConverter {
                 String[] parts = line.split("\t");
                 countryCodeToCountry.put(parts[2].toLowerCase(), parts[0]);
                 countryToCountryCode.put(parts[0].toLowerCase(), parts[2]);
+                alpha2ToAlpha3.put(parts[1].toLowerCase(), parts[2]);
+                alpha3ToAlpha2.put(parts[2].toLowerCase(), parts[1]);
             }
         }
         catch (IOException | URISyntaxException ex) {
