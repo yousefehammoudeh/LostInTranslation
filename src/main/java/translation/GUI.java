@@ -12,18 +12,23 @@ import java.awt.event.*;
 public class GUI {
 
     public static void main(String[] args) {
+        Translator translator = new JSONTranslator();
+
         SwingUtilities.invokeLater(() -> {
+            JPanel languagePanel = new JPanel();
+            JComboBox<String> languageComboBox = new JComboBox<>();
+            for(String languageCode : translator.getLanguageCodes()) {
+                languageComboBox.addItem(languageCode);
+            }
+            languagePanel.add(new JLabel("Language:"));
+            languagePanel.add(languageComboBox);
+
             JPanel countryPanel = new JPanel();
             JTextField countryField = new JTextField(10);
             countryField.setText("can");
             countryField.setEditable(false); // we only support the "can" country code for now
             countryPanel.add(new JLabel("Country:"));
             countryPanel.add(countryField);
-
-            JPanel languagePanel = new JPanel();
-            JTextField languageField = new JTextField(10);
-            languagePanel.add(new JLabel("Language:"));
-            languagePanel.add(languageField);
 
             JPanel buttonPanel = new JPanel();
             JButton submit = new JButton("Submit");
@@ -39,7 +44,7 @@ public class GUI {
             submit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String language = languageField.getText();
+                    String language = languageComboBox.getSelectedItem().toString();
                     String country = countryField.getText();
 
                     // for now, just using our simple translator, but
@@ -58,8 +63,8 @@ public class GUI {
 
             JPanel mainPanel = new JPanel();
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-            mainPanel.add(countryPanel);
             mainPanel.add(languagePanel);
+            mainPanel.add(countryPanel);
             mainPanel.add(buttonPanel);
 
             JFrame frame = new JFrame("Country Name Translator");
