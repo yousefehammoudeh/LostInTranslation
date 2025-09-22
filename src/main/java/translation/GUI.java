@@ -1,6 +1,8 @@
 package translation;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.*;
 
 
@@ -35,25 +37,26 @@ public class GUI {
             JScrollPane scrollPane = new JScrollPane(countryList);
             countryPanel.add(scrollPane);
 
-            JPanel buttonPanel = new JPanel();
-            JButton submit = new JButton("Submit");
-            buttonPanel.add(submit);
-
+            JPanel resultPanel = new JPanel();
             JLabel resultLabelText = new JLabel("Translation:");
-            buttonPanel.add(resultLabelText);
+            resultPanel.add(resultLabelText);
             JLabel resultLabel = new JLabel("\t\t\t\t\t\t\t");
-            buttonPanel.add(resultLabel);
+            resultPanel.add(resultLabel);
 
+            languageComboBox.addItemListener(new ItemListener() {
 
-            // adding listener for when the user clicks the submit button
-            submit.addActionListener(new ActionListener() {
+                /**
+                 * Invoked when an item has been selected or deselected by the user.
+                 * The code written for this method performs the operations
+                 * that need to occur when an item is selected (or deselected).
+                 *
+                 * @param e the event to be processed
+                 */
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void itemStateChanged(ItemEvent e) {
                     String language = languageComboBox.getSelectedItem().toString();
                     String country = countryList.getSelectedValue().toString();
 
-                    // for now, just using our simple translator, but
-                    // we'll need to use the real JSON version later.
                     Translator translator = new JSONTranslator();
 
                     String result = translator.translate(countryCodeConverter.fromCountry(country).toLowerCase(),
@@ -62,15 +65,30 @@ public class GUI {
                         result = "no translation found!";
                     }
                     resultLabel.setText(result);
-
                 }
+            });
 
+            countryList.addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    String language = languageComboBox.getSelectedItem().toString();
+                    String country = countryList.getSelectedValue().toString();
+
+                    Translator translator = new JSONTranslator();
+
+                    String result = translator.translate(countryCodeConverter.fromCountry(country).toLowerCase(),
+                            languageCodeConverter.fromLanguage(language).toLowerCase());
+                    if (result == null) {
+                        result = "no translation found!";
+                    }
+                    resultLabel.setText(result);
+                }
             });
 
             JPanel mainPanel = new JPanel();
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
             mainPanel.add(languagePanel);
-            mainPanel.add(buttonPanel);
+            mainPanel.add(resultPanel);
             mainPanel.add(countryPanel);
 
             JFrame frame = new JFrame("Country Name Translator");
